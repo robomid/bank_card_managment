@@ -7,7 +7,7 @@
 
 1. Клонировать репозиторий:
 ```bash
-git clone https://github.com/your-repo/bank-card-management.git
+git clone https://github.com/robomid/bank_card_managment.git
 cd bank-card-management
 ```
 
