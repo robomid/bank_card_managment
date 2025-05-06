@@ -1,0 +1,136 @@
+databaseChangeLog:
+  - changeSet:
+      id: role
+      author: zhenya
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: users
+      author: zhenya
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: username
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: verification_code
+                  type: varchar(10)
+              - column:
+                  name: verification_code_expiration
+                  type: timestamp(6)
+
+  - changeSet:
+      id: user_roles
+      author: zhenya
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fkhfh9dx7w3ubf1co1vdev94g3f
+                    references: users
+              - column:
+                  name: role_id
+                  type: integer
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fkrhfovtciq1l558cw6udg0h0d3
+                    references: role
+            primaryKey:
+              - user_id
+              - role_id
+
+  - changeSet:
+      id: card
+      author: zhenya
+      changes:
+        - createTable:
+            tableName: card
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_holder_name
+                  type: varchar(50)
+              - column:
+                  name: encrypted_card_number
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: balance
+                  type: numeric(38, 2)
+              - column:
+                  name: is_blocked
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(10)
+                  constraints:
+                    check: "status IN ('ACTIVE', 'BLOCKED', 'EXPIRED')"
+              - column:
+                  name: expiration_date
+                  type: date
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fkq5apcc4ddrab8t48q2uqvyquq
+                    references: users
+
+
+
