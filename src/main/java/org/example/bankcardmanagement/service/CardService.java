@@ -57,12 +57,6 @@ public class CardService {
             return cardRepository.findAll(getPageable(pageDto)).map(CardMapper.INSTANCE::toCardResponse);
         }
 
-        Page<Card> cards = cardRepository.findByUser(currentUser, getPageable(pageDto));
-
-        for (Card card : cards) {
-            String number = card.getEncryptedCardNumber();
-        }
-
         return cardRepository.findByUser(currentUser, getPageable(pageDto)).map(CardMapper.INSTANCE::toCardResponse);
     }
 
