@@ -5,6 +5,7 @@ import org.example.bankcardmanagement.dto.PageDto;
 import org.example.bankcardmanagement.dto.TransferRequest;
 import org.example.bankcardmanagement.service.CardService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,23 +23,20 @@ public class CardController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addCard(@RequestParam String cardHolderName) {
         return ResponseEntity.ok(cardService.createCard(cardHolderName));
     }
 
-    @PostMapping("/block/{cardId}")
-    public ResponseEntity<?> blockingCard(@PathVariable long cardId) {
-        cardService.blockCard(cardId);
-        return ResponseEntity.ok("The card has been successfully blocked.");
-    }
-
-    @PostMapping("/active/{cardId}")
-    public ResponseEntity<?> activeCard(@PathVariable long cardId) {
-        cardService.activeCard(cardId);
-        return ResponseEntity.ok("The card has been successfully activated.");
+    @PostMapping("/changeStatus/{cardId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> changeStatusCard(@PathVariable long cardId, @RequestParam String status) {
+        cardService.changeStatusCard(cardId, status);
+        return ResponseEntity.ok("The card has been successfully "+status+".");
     }
 
     @DeleteMapping("/{cardId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCard(@PathVariable long cardId) {
         cardService.deleteCard(cardId);
         return ResponseEntity.ok("The card has been successfully deleted.");
@@ -51,6 +49,7 @@ public class CardController {
     }
 
     @GetMapping("/requestBlockCard")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getRequestBlockCard(@RequestBody PageDto pageDto) {
         return ResponseEntity.ok(cardService.getRequestBlockCards(pageDto));
     }

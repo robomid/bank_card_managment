@@ -57,10 +57,15 @@ public class CardService {
             return cardRepository.findAll(getPageable(pageDto)).map(CardMapper.INSTANCE::toCardResponse);
         }
 
+        Page<Card> cards = cardRepository.findByUser(currentUser, getPageable(pageDto));
+
+        for (Card card : cards) {
+            String number = card.getEncryptedCardNumber();
+        }
+
         return cardRepository.findByUser(currentUser, getPageable(pageDto)).map(CardMapper.INSTANCE::toCardResponse);
     }
 
-    // Логика создания карты
     public CardResponse createCard(String cardHolderName) {
         Card card = new Card();
         card.setCardHolderName(cardHolderName);
@@ -76,16 +81,17 @@ public class CardService {
     }
 
     @Transactional
-    public void blockCard(Long cardId) {
+    public void changeStatusCard(Long cardId, String status) {
         Card card = getCardById(cardId);
-        card.setStatus(CardStatus.BLOCKED);
-        cardRepository.save(card);
-    }
 
-    @Transactional
-    public void activeCard(Long cardId) {
-        Card card = getCardById(cardId);
-        card.setStatus(CardStatus.ACTIVE);
+        if(status.equals("ACTIVE")) {
+            card.setStatus(CardStatus.ACTIVE);
+        } else if(status.equals("BLOCKED")) {
+            card.setStatus(CardStatus.BLOCKED);
+        } else {
+            throw new IllegalArgumentException("Status not found");
+        }
+
         cardRepository.save(card);
     }
 
@@ -140,7 +146,7 @@ public class CardService {
         }
     }
 
-    private String generateCardNumber() {
+    public String generateCardNumber() {
         Random random = new Random();
         StringBuilder cardNumber = new StringBuilder(16);
 
